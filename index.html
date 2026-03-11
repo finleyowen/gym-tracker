@@ -44,8 +44,8 @@
 
   .logo {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 26px;
-    letter-spacing: 3px;
+    font-size: clamp(16px, 5vw, 26px);
+    letter-spacing: clamp(1px, 1vw, 3px);
     color: var(--accent);
   }
 
@@ -61,9 +61,6 @@
     gap: 20px;
     min-height: calc(100vh - 56px);
   }
-
-  /* SIDEBAR */
-  /* .sidebar {} */
 
   .section-label {
     font-family: 'DM Mono', monospace;
@@ -445,6 +442,52 @@
     margin: 4px 0;
   }
 
+  /* OPTIONS MENU */
+  .menu-wrap { position: relative; }
+
+  .menu-btn {
+    display: flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 18px;
+    transition: border-color 0.15s, background 0.15s;
+    color: var(--text);
+  }
+  .menu-btn:hover { border-color: var(--muted2); background: #222; }
+
+  .menu-dropdown {
+    display: none;
+    position: absolute; top: calc(100% + 8px); right: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    min-width: 180px;
+    z-index: 300;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    animation: slideUp 0.15s ease;
+  }
+  .menu-dropdown.open { display: block; }
+
+  .menu-item {
+    display: flex; align-items: center; gap: 10px;
+    width: 100%; padding: 11px 14px;
+    background: none; border: none;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.12s;
+    white-space: nowrap;
+  }
+  .menu-item:hover { background: var(--surface2); }
+  .menu-item.danger { color: var(--accent2); }
+  .menu-item + .menu-item { border-top: 1px solid var(--border); }
+
   /* RESPONSIVE */
   @media (max-width: 640px) {
     .app { grid-template-columns: 1fr; }
@@ -492,12 +535,18 @@
 
 <header>
   <div class="logo">GYM TRACKER</div>
-  <div class="header-actions io-bar">
-    <button class="btn btn-secondary" onclick="exportData()">⬇ Export</button>
-    <label class="btn btn-secondary" style="cursor:pointer">
-      ⬆ Import
-      <input type="file" accept=".json" style="display:none" onchange="importData(event)">
-    </label>
+  <div class="header-actions">
+    <div class="menu-wrap" id="menuWrap">
+      <button class="menu-btn" onclick="toggleMenu()" title="Options">⋯</button>
+      <div class="menu-dropdown" id="menuDropdown">
+        <button class="menu-item" onclick="exportData(); closeMenu()">⬇ Export data</button>
+        <label class="menu-item" style="cursor:pointer">
+          ⬆ Import data
+          <input type="file" accept=".json" style="display:none" onchange="importData(event)">
+        </label>
+        <button class="menu-item danger" onclick="clearData(); closeMenu()">✕ Clear all data</button>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -1017,6 +1066,29 @@ document.addEventListener('keydown', e => {
 document.getElementById('exerciseModal').addEventListener('click', e => {
   if (e.target === e.currentTarget) closeExerciseModal();
 });
+
+// ─── OPTIONS MENU ─────────────────────────────────────────────────
+function toggleMenu() {
+  document.getElementById('menuDropdown').classList.toggle('open');
+}
+
+function closeMenu() {
+  document.getElementById('menuDropdown').classList.remove('open');
+}
+
+document.addEventListener('click', e => {
+  if (!document.getElementById('menuWrap').contains(e.target)) closeMenu();
+});
+
+function clearData() {
+  if (!confirm('Clear ALL exercises and sets? This cannot be undone.')) return;
+  db = { exercises: [] };
+  selectedId = null;
+  saveDB();
+  renderSidebar();
+  renderDetail();
+  toast('All data cleared');
+}
 
 // ─── INIT ─────────────────────────────────────────────────────────
 renderSidebar();
