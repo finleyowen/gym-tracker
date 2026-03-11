@@ -593,7 +593,11 @@ function closeExerciseModal() {
   editingId = null;
 }
 
+let _saving = false;
 function saveExercise() {
+  if (_saving) return;
+  _saving = true;
+  setTimeout(() => _saving = false, 500);
   const name = document.getElementById('exName').value.trim();
   if (!name) return;
   const settingInfo = document.getElementById('exSetting').value.trim();
