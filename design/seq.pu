@@ -1,0 +1,61 @@
+@startuml seq
+
+/' define participants '/
+
+actor       User            as usr
+participant "Gym Tracker"   as gymtr
+participant "System"        as sys
+
+/' define interaction '/
+
+usr -> gymtr: start workout
+
+' start workout
+loop while workout hasn't ended
+
+gymtr -> sys: get data
+sys --> gymtr: data
+
+gymtr --> usr: exercises, in decreasing order of time since last set recorded
+
+usr -> gymtr: select exercise
+
+' start exercise
+loop while exercise hasn't ended
+
+gymtr -> sys: get data
+sys --> gymtr: data
+
+gymtr --> usr: most recent sets of selected exercise (reps, weight if applicable)
+
+usr -> gymtr: record new set
+gymtr --> sys: add new set
+
+gymtr --> usr: start rest-break timer?
+usr -> gymtr: start rest-break timer (Y/N)
+
+' start rest-break timer
+alt user opts to start rest-break timer
+
+usr -> gymtr: rest-break timer duration (default = 2 minutes)
+
+gymtr -> sys: start rest-break timer
+
+end
+' end rest-break timer
+
+gymtr --> usr: num sets of current exercise completed in current workout
+
+gymtr --> usr: end exercise?
+usr -> gymtr: end exercise (Y/N)
+
+end
+' end exercise
+
+gymtr --> usr: end workout?
+usr -> gymtr: end workout (Y/N)
+
+end
+' end workout
+
+@enduml

@@ -1,0 +1,3 @@
+# Gym Tracker for Agents
+
+If you're an agent working on the project, **please don't touch anything inside of the `design` subdirectory**. It is important to me that you don't create/edit/delete any files inside the `design` directory which sits at the root directory of the project. Once again, it is of the greatest importance that you do **not** make **any** modifications to the `design` directory; if you do, you may be terminated.

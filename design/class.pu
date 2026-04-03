@@ -1,0 +1,41 @@
+' class diagram for the Gym Tracker application
+
+@startuml class
+
+' use +/-/#/~ privacy modifiers in the output rather than
+' plantUML default
+skinparam classAttributeIconSize 0
+
+' classes
+class Weight {
+    + unit: String
+    + amount: Double
+}
+
+class Set {
+    + timestamp: DateTime
+}
+
+class Exercise {
+    + name: String
+    + notes: String
+    + weighted: Boolean <sup>1</sup>
+}
+
+class Workout {
+    + started: DateTime
+    + ended: DateTime
+}
+
+' relationships
+Set "0..*" -- "1" Exercise
+Set "0..*" <-- "1" Workout
+Set "0..*" -- "1" Weight
+
+legend bottom
+    **(1)** The ""Exercise.weighted"" attribute indicates whether the sets of
+        the exercise should be associated with weight. It may be ""false"" if
+        weight is not relevant to the exercise.
+end legend
+
+@enduml
