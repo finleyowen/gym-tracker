@@ -599,7 +599,7 @@ function loadDB() {
     if (raw) {
       const parsed = JSON.parse(raw);
       // Migrate from old format (ironlog_v1)
-      if (!parsed.sets) return migrateOldFormat(parsed);
+      if (!Array.isArray(parsed.sets)) return migrateOldFormat(parsed);
       return parsed;
     }
   } catch(e) {}
@@ -1332,15 +1332,24 @@ function importData(event) {
   reader.onload = e => {
     try {
       const raw = JSON.parse(e.target.result);
-      if (!raw.exercises || !Array.isArray(raw.exercises)) throw new Error();
-      db = fromExportFormat(raw);
+      if (!raw.exercises || !Array.isArray(raw.exercises)) {
+        toast('Invalid file: missing exercises array', true); return;
+      }
+      const imported = fromExportFormat(raw);
+      if (!imported.exercises || imported.exercises.length === 0) {
+        toast('File contained no exercises', true); return;
+      }
+      db = imported;
       selectedExId = null;
       saveDB();
       renderHeader();
       renderSidebar();
       renderDetail();
-      toast('Data imported!');
-    } catch { toast('Invalid file', true); }
+      toast(`Imported ${db.exercises.length} exercise${db.exercises.length !== 1 ? 's' : ''} ✓`);
+    } catch(err) {
+      console.error('Import error:', err);
+      toast('Import failed: ' + err.message, true);
+    }
   };
   reader.readAsText(file);
   event.target.value = '';
