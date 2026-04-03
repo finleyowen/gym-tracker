@@ -3,565 +3,536 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#0a0a0a">
+<meta name="theme-color" content="#0d0d0d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <title>Gym Tracker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0a0a0a;
-    --surface: #141414;
-    --surface2: #1c1c1c;
-    --border: #2a2a2a;
-    --accent: #e8ff47;
-    --accent2: #ff4747;
-    --text: #f0f0f0;
-    --muted: #666;
-    --muted2: #444;
-    --radius: 6px;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    min-height: 100vh;
-    font-size: 14px;
-    line-height: 1.5;
-  }
-
-  /* HEADER */
-  header {
-    position: sticky; top: 0; z-index: 100;
-    background: var(--bg);
-    border-bottom: 1px solid var(--border);
-    padding: 0 20px;
-    display: flex; align-items: center; justify-content: space-between;
-    height: 56px;
-  }
-
-  .logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(16px, 5vw, 26px);
-    letter-spacing: clamp(1px, 1vw, 3px);
-    color: var(--accent);
-  }
-
-  .header-actions { display: flex; gap: 8px; }
-
-  /* MAIN LAYOUT */
-  .app {
-    max-width: 880px;
-    margin: 0 auto;
-    padding: 20px;
-    display: grid;
-    grid-template-columns: 260px 1fr;
-    gap: 20px;
-    min-height: calc(100vh - 56px);
-  }
-
-  .section-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 2px;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 10px;
-    padding-left: 2px;
-  }
-
-  .exercise-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    margin-bottom: 16px;
-  }
-
-  .exercise-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 12px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    cursor: pointer;
-    transition: border-color 0.15s, background 0.15s;
-  }
-
-  .exercise-item:hover { border-color: var(--muted2); background: var(--surface2); }
-  .exercise-item.active { border-color: var(--accent); background: #1a1e00; }
-
-  .exercise-name {
-    font-weight: 500;
-    font-size: 13px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 160px;
-  }
-
-  .exercise-meta {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    color: var(--muted);
-  }
-
-  .exercise-actions { display: flex; gap: 4px; opacity: 0; transition: opacity 0.15s; }
-  .exercise-item:hover .exercise-actions { opacity: 1; }
-
-  /* DETAIL PANEL */
-  .detail { display: flex; flex-direction: column; gap: 20px; }
-
-  .empty-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 300px;
-    color: var(--muted);
-    gap: 12px;
-    border: 1px dashed var(--border);
-    border-radius: var(--radius);
-  }
-
-  .empty-state .icon { font-size: 40px; opacity: 0.4; }
-  .empty-state p { font-family: 'DM Mono', monospace; font-size: 12px; }
-
-  /* CARDS */
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px;
-  }
-
-  .card-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 18px;
-    letter-spacing: 1.5px;
-    margin-bottom: 12px;
-    color: var(--accent);
-  }
-
-  /* EXERCISE HEADER */
-  .exercise-header-card {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 16px;
-  }
-
-  .exercise-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 32px;
-    letter-spacing: 2px;
-    line-height: 1;
-    margin-bottom: 8px;
-  }
-
-  .info-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-top: 8px;
-  }
-
-  .info-block {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 8px 10px;
-  }
-
-  .info-block label {
-    display: block;
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 3px;
-  }
-
-  .info-block p { font-size: 12px; }
-
-  /* LOG SET FORM */
-  .log-form {
-    display: flex;
-    gap: 10px;
-    align-items: flex-end;
-    flex-wrap: wrap;
-  }
-
-  .field {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
-
-  .field label {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-
-  input[type="number"], input[type="text"], select, textarea {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    font-size: 14px;
-    padding: 8px 10px;
-    outline: none;
-    transition: border-color 0.15s;
-    width: 100%;
-  }
-
-  input:focus, select:focus, textarea:focus { border-color: var(--accent); }
-  textarea { resize: vertical; min-height: 60px; font-size: 12px; }
-
-  input[type="number"] { width: 90px; }
-
-  /* BUTTONS */
-  .btn {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 8px 16px;
-    border-radius: var(--radius);
-    border: none;
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    letter-spacing: 0.5px;
-    cursor: pointer;
-    transition: all 0.15s;
-    white-space: nowrap;
-  }
-
-  .btn-primary {
-    background: var(--accent);
-    color: #0a0a0a;
-    font-weight: 500;
-  }
-  .btn-primary:hover { background: #d4e83e; transform: translateY(-1px); }
-  .btn-primary:active { transform: translateY(0); }
-
-  .btn-secondary {
-    background: var(--surface2);
-    color: var(--text);
-    border: 1px solid var(--border);
-  }
-  .btn-secondary:hover { border-color: var(--muted2); background: #222; }
-
-  .btn-danger {
-    background: transparent;
-    color: var(--accent2);
-    border: 1px solid #3a1414;
-  }
-  .btn-danger:hover { background: #2a0a0a; border-color: var(--accent2); }
-
-  .btn-icon {
-    padding: 4px 6px;
-    background: transparent;
-    border: none;
-    color: var(--muted);
-    cursor: pointer;
-    border-radius: 3px;
-    transition: color 0.15s, background 0.15s;
-    font-size: 13px;
-  }
-  .btn-icon:hover { color: var(--text); background: var(--surface2); }
-  .btn-icon.danger:hover { color: var(--accent2); }
-
-  /* TIMER */
-  .timer-banner {
-    display: none;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    background: #1a1e00;
-    border: 1px solid var(--accent);
-    border-radius: var(--radius);
-    padding: 12px 16px;
-  }
-
-  .timer-banner.active { display: flex; }
-
-  .timer-display {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 36px;
-    letter-spacing: 2px;
-    color: var(--accent);
-    line-height: 1;
-  }
-
-  .timer-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 2px;
-    color: var(--muted);
-    text-transform: uppercase;
-  }
-
-  .timer-progress {
-    flex: 1;
-    height: 4px;
-    background: var(--border);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  .timer-bar {
-    height: 100%; background: var(--accent);
-    width: 100%;
-    transition: width 1s linear;
-    border-radius: 2px;
-  }
-
-  /* CHART */
-  .chart-container { position: relative; }
-
-  canvas { width: 100% !important; }
-
-  /* SETS TABLE */
-  .sets-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-  }
-
-  .sets-table th {
-    text-align: left;
-    font-size: 9px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--muted);
-    padding: 6px 8px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .sets-table td {
-    padding: 8px 8px;
-    border-bottom: 1px solid #1a1a1a;
-    vertical-align: middle;
-  }
-
-  .sets-table tr:last-child td { border-bottom: none; }
-  .sets-table tr:hover td { background: var(--surface2); }
-
-  .set-badge {
-    display: inline-block;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    padding: 1px 6px;
-    font-size: 10px;
-    color: var(--muted);
-  }
-
-  /* MODAL */
-  .modal-overlay {
-    display: none;
-    position: fixed; inset: 0; z-index: 200;
-    background: rgba(0,0,0,0.8);
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(4px);
-  }
-  .modal-overlay.open { display: flex; }
-
-  .modal {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 24px;
-    width: 100%;
-    max-width: 420px;
-    margin: 20px;
-    animation: slideUp 0.2s ease;
-  }
-
-  @keyframes slideUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .modal-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px;
-    letter-spacing: 2px;
-    color: var(--accent);
-    margin-bottom: 16px;
-  }
-
-  .modal-fields { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
-  .modal-field { display: flex; flex-direction: column; gap: 5px; }
-  .modal-field label {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  .modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
-
-  /* TOAST */
-  .toast {
-    position: fixed; bottom: 20px; right: 20px;
-    background: var(--accent);
-    color: #0a0a0a;
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    padding: 10px 16px;
-    border-radius: var(--radius);
-    z-index: 999;
-    transform: translateY(60px);
-    opacity: 0;
-    transition: all 0.3s ease;
-    font-weight: 500;
-  }
-
-  .toast.show { transform: translateY(0); opacity: 1; }
-
-  /* IMPORT/EXPORT BUTTONS */
-  .io-bar {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-
-  .divider {
-    height: 1px;
-    background: var(--border);
-    margin: 4px 0;
-  }
-
-  /* OPTIONS MENU */
-  .menu-wrap { position: relative; }
-
-  .menu-btn {
-    display: flex; align-items: center; justify-content: center;
-    width: 36px; height: 36px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    cursor: pointer;
-    font-size: 18px;
-    transition: border-color 0.15s, background 0.15s;
-    color: var(--text);
-  }
-  .menu-btn:hover { border-color: var(--muted2); background: #222; }
-
-  .menu-dropdown {
-    display: none;
-    position: absolute; top: calc(100% + 8px); right: 0;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    min-width: 180px;
-    z-index: 300;
-    overflow: hidden;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-    animation: slideUp 0.15s ease;
-  }
-  .menu-dropdown.open { display: block; }
-
-  .menu-item {
-    display: flex; align-items: center; gap: 10px;
-    width: 100%; padding: 11px 14px;
-    background: none; border: none;
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    cursor: pointer;
-    text-align: left;
-    transition: background 0.12s;
-    white-space: nowrap;
-  }
-  .menu-item:hover { background: var(--surface2); }
-  .menu-item.danger { color: var(--accent2); }
-  .menu-item + .menu-item { border-top: 1px solid var(--border); }
-
-  /* RESPONSIVE */
-  @media (max-width: 640px) {
-    .app { grid-template-columns: 1fr; }
-    .sidebar { order: 2; }
-    .detail { order: 1; }
-    .exercise-header-card { flex-direction: column; }
-  }
-
-  /* NO SETS */
-  .no-sets {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--muted);
-    padding: 20px 8px;
-    text-align: center;
-  }
-
-  /* LAST WEIGHT BADGE */
-  .last-weight {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: #1a1e00;
-    border: 1px solid var(--accent);
-    border-radius: 4px;
-    padding: 4px 10px;
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    color: var(--accent);
-    margin-top: 8px;
-  }
-
-  .pr-badge {
-    background: var(--accent2);
-    color: white;
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 1px;
-    padding: 1px 5px;
-    border-radius: 3px;
-  }
+:root {
+  --bg:       #0d0d0d;
+  --surface:  #161616;
+  --surface2: #1f1f1f;
+  --surface3: #282828;
+  --border:   #2c2c2c;
+  --border2:  #3a3a3a;
+  --accent:   #e8ff47;
+  --accent-bg:#1a1f00;
+  --danger:   #ff4545;
+  --danger-bg:#1f0a0a;
+  --text:     #f0f0f0;
+  --muted:    #6a6a6a;
+  --muted2:   #444;
+  --radius:   6px;
+  --radius-lg:10px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  font-size:14px;
+  line-height:1.5;
+  display:flex;
+  flex-direction:column;
+  height:100%;
+}
+
+/* ── SCROLLBAR ─────────────────── */
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+
+/* ── HEADER ────────────────────── */
+header{
+  flex-shrink:0;
+  position:sticky;top:0;z-index:50;
+  background:var(--bg);
+  border-bottom:1px solid var(--border);
+  height:52px;
+  padding:0 16px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;
+}
+
+.logo{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:24px;
+  letter-spacing:3px;
+  color:var(--accent);
+  flex-shrink:0;
+}
+
+.header-right{display:flex;align-items:center;gap:8px;}
+
+/* ── MAIN LAYOUT ───────────────── */
+.app{
+  flex:1;
+  overflow:hidden;
+  display:grid;
+  grid-template-columns:260px 1fr;
+  min-height:0;
+}
+
+/* ── SIDEBAR ───────────────────── */
+.sidebar{
+  border-right:1px solid var(--border);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+
+.sidebar-header{
+  padding:14px 14px 10px;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+
+.sidebar-scroll{
+  flex:1;
+  overflow-y:auto;
+  padding:10px;
+}
+
+.section-label{
+  font-family:'DM Mono',monospace;
+  font-size:9px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--muted);
+  padding:4px 4px 6px;
+}
+
+.exercise-list{list-style:none;display:flex;flex-direction:column;gap:2px;}
+
+.exercise-item{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:9px 10px;
+  background:transparent;
+  border:1px solid transparent;
+  border-radius:var(--radius);
+  cursor:pointer;
+  transition:background .12s,border-color .12s;
+  gap:8px;
+}
+.exercise-item:hover{background:var(--surface);border-color:var(--border);}
+.exercise-item.active{background:var(--accent-bg);border-color:var(--accent);}
+
+.exercise-item-info{flex:1;min-width:0;}
+.exercise-item-name{font-weight:500;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.exercise-item-meta{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-top:1px;}
+
+.exercise-item-actions{display:flex;gap:2px;opacity:0;transition:opacity .12s;flex-shrink:0;}
+.exercise-item:hover .exercise-item-actions,
+.exercise-item.active .exercise-item-actions{opacity:1;}
+
+.sidebar-footer{
+  padding:10px;
+  border-top:1px solid var(--border);
+  flex-shrink:0;
+}
+
+/* ── DETAIL ────────────────────── */
+.detail{
+  overflow-y:auto;
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+
+/* ── EMPTY STATE ───────────────── */
+.empty-state{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  height:360px;
+  gap:10px;
+  border:1px dashed var(--border);
+  border-radius:var(--radius-lg);
+  color:var(--muted);
+}
+.empty-state-icon{font-size:44px;opacity:.35;}
+.empty-state p{font-family:'DM Mono',monospace;font-size:11px;}
+
+/* ── CARDS ─────────────────────── */
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:16px;
+}
+
+.card-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:17px;
+  letter-spacing:1.5px;
+  color:var(--accent);
+  margin-bottom:12px;
+}
+
+/* ── EXERCISE HEADER ───────────── */
+.ex-header{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+}
+.ex-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:30px;
+  letter-spacing:2px;
+  line-height:1.05;
+  margin-bottom:6px;
+}
+.ex-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
+.tag{
+  font-family:'DM Mono',monospace;
+  font-size:10px;
+  letter-spacing:1px;
+  padding:2px 8px;
+  border-radius:3px;
+  border:1px solid var(--border2);
+  color:var(--muted);
+  text-transform:uppercase;
+}
+.tag.accent{border-color:var(--accent);color:var(--accent);}
+
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px;}
+.info-block{
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:8px 10px;
+}
+.info-block label{
+  display:block;
+  font-family:'DM Mono',monospace;
+  font-size:9px;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:3px;
+}
+.info-block p{font-size:12px;line-height:1.4;}
+
+.pr-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:var(--accent-bg);
+  border:1px solid var(--accent);
+  border-radius:4px;
+  padding:5px 12px;
+  font-family:'DM Mono',monospace;
+  font-size:12px;
+  color:var(--accent);
+  margin-top:10px;
+}
+.pr-badge{
+  background:var(--danger);
+  color:#fff;
+  font-family:'DM Mono',monospace;
+  font-size:8px;
+  letter-spacing:1px;
+  padding:1px 5px;
+  border-radius:2px;
+  font-weight:500;
+}
+
+/* ── WORKOUT BANNER ────────────── */
+.workout-banner{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  background:var(--surface2);
+  border:1px solid var(--border2);
+  border-radius:var(--radius);
+  padding:10px 14px;
+  font-family:'DM Mono',monospace;
+  font-size:11px;
+  color:var(--muted);
+}
+.workout-banner.active{
+  background:#0d1a00;
+  border-color:var(--accent);
+  color:var(--accent);
+}
+.workout-elapsed{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:24px;
+  letter-spacing:2px;
+  color:var(--accent);
+  line-height:1;
+}
+
+/* ── TIMER ─────────────────────── */
+.timer-card{
+  display:none;
+  align-items:center;
+  gap:14px;
+  background:var(--accent-bg);
+  border:1px solid var(--accent);
+  border-radius:var(--radius-lg);
+  padding:14px 16px;
+}
+.timer-card.show{display:flex;}
+.timer-left{flex-shrink:0;}
+.timer-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
+.timer-display{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:40px;
+  letter-spacing:2px;
+  color:var(--accent);
+  line-height:1;
+}
+.timer-mid{flex:1;display:flex;flex-direction:column;gap:6px;}
+.timer-progress{height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.timer-bar{height:100%;background:var(--accent);border-radius:2px;transition:width 1s linear;}
+.timer-msg{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.5px;}
+
+/* ── LOG SET FORM ──────────────── */
+.log-form{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;}
+.field{display:flex;flex-direction:column;gap:4px;}
+.field label{
+  font-family:'DM Mono',monospace;
+  font-size:9px;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+
+input[type=number],input[type=text],select,textarea{
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  color:var(--text);
+  font-family:'DM Mono',monospace;
+  font-size:14px;
+  padding:7px 10px;
+  outline:none;
+  transition:border-color .12s;
+  width:100%;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);}
+textarea{resize:vertical;min-height:56px;font-size:12px;}
+input[type=number]{width:84px;}
+input[type=number].wide{width:110px;}
+
+/* ── BUTTONS ───────────────────── */
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:7px 14px;
+  border-radius:var(--radius);
+  border:none;
+  font-family:'DM Mono',monospace;
+  font-size:12px;
+  letter-spacing:.4px;
+  cursor:pointer;
+  transition:all .12s;
+  white-space:nowrap;
+  line-height:1.4;
+}
+.btn-primary{background:var(--accent);color:#0d0d0d;font-weight:500;}
+.btn-primary:hover{background:#cee038;transform:translateY(-1px);}
+.btn-primary:active{transform:translateY(0);}
+.btn-secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
+.btn-secondary:hover{border-color:var(--border2);background:var(--surface3);}
+.btn-danger{background:transparent;color:var(--danger);border:1px solid #3a1010;}
+.btn-danger:hover{background:var(--danger-bg);border-color:var(--danger);}
+.btn-ghost{background:transparent;color:var(--muted);border:none;padding:5px 8px;}
+.btn-ghost:hover{color:var(--text);background:var(--surface2);}
+.btn-icon{
+  padding:4px 6px;
+  background:transparent;border:none;
+  color:var(--muted);cursor:pointer;
+  border-radius:3px;
+  transition:color .12s,background .12s;
+  font-size:13px;line-height:1;
+}
+.btn-icon:hover{color:var(--text);background:var(--surface2);}
+.btn-icon.danger:hover{color:var(--danger);}
+.btn-sm{padding:5px 10px;font-size:11px;}
+
+/* ── SETS TABLE ────────────────── */
+.sets-table{width:100%;border-collapse:collapse;font-family:'DM Mono',monospace;font-size:12px;}
+.sets-table th{
+  text-align:left;
+  font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--muted);
+  padding:5px 8px;
+  border-bottom:1px solid var(--border);
+}
+.sets-table td{
+  padding:8px 8px;
+  border-bottom:1px solid #1c1c1c;
+  vertical-align:middle;
+}
+.sets-table tr:last-child td{border-bottom:none;}
+.sets-table tr:hover td{background:var(--surface2);}
+.set-num{
+  display:inline-block;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:3px;
+  padding:1px 6px;
+  font-size:10px;
+  color:var(--muted);
+}
+
+/* ── CHART ─────────────────────── */
+canvas{display:block;width:100%!important;}
+
+/* ── MODAL ─────────────────────── */
+.modal-overlay{
+  display:none;position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,.75);
+  align-items:center;justify-content:center;
+  backdrop-filter:blur(3px);
+}
+.modal-overlay.open{display:flex;}
+.modal{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:var(--radius-lg);
+  padding:22px;
+  width:100%;max-width:400px;
+  margin:16px;
+  animation:slideUp .18s ease;
+}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--accent);margin-bottom:14px;}
+.modal-fields{display:flex;flex-direction:column;gap:10px;margin-bottom:18px;}
+.modal-field{display:flex;flex-direction:column;gap:4px;}
+.modal-field label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;}
+
+.toggle-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.toggle-row label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
+.toggle{
+  position:relative;width:36px;height:20px;flex-shrink:0;
+}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-slider{
+  position:absolute;inset:0;
+  background:var(--surface3);
+  border:1px solid var(--border2);
+  border-radius:20px;
+  cursor:pointer;
+  transition:.2s;
+}
+.toggle-slider::before{
+  content:'';position:absolute;
+  height:14px;width:14px;
+  left:2px;top:50%;transform:translateY(-50%);
+  background:var(--muted);
+  border-radius:50%;
+  transition:.2s;
+}
+.toggle input:checked + .toggle-slider{background:var(--accent-bg);border-color:var(--accent);}
+.toggle input:checked + .toggle-slider::before{transform:translate(16px,-50%);background:var(--accent);}
+
+/* ── TOAST ─────────────────────── */
+.toast{
+  position:fixed;bottom:20px;right:20px;
+  background:var(--accent);
+  color:#0d0d0d;
+  font-family:'DM Mono',monospace;font-size:12px;font-weight:500;
+  padding:9px 14px;
+  border-radius:var(--radius);
+  z-index:999;
+  transform:translateY(50px);opacity:0;
+  transition:all .25s ease;
+  pointer-events:none;
+  max-width:280px;
+}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.error{background:var(--danger);color:#fff;}
+
+/* ── NOTIFICATION NOTICE ───────── */
+.notif-notice{
+  display:flex;align-items:flex-start;gap:8px;
+  background:var(--danger-bg);
+  border:1px solid #3a1010;
+  border-radius:var(--radius);
+  padding:10px 12px;
+  font-family:'DM Mono',monospace;font-size:11px;color:var(--danger);
+  line-height:1.5;
+}
+
+/* ── IO BAR ────────────────────── */
+.io-bar{display:flex;gap:6px;}
+
+/* ── RESPONSIVE ────────────────── */
+@media(max-width:640px){
+  .app{grid-template-columns:1fr;grid-template-rows:auto 1fr;}
+  .sidebar{border-right:none;border-bottom:1px solid var(--border);max-height:200px;}
+  .detail{padding:14px;}
+  .ex-header{flex-direction:column;}
+  .log-form{gap:8px;}
+}
+
+/* ── MISC ──────────────────────── */
+.divider{height:1px;background:var(--border);margin:2px 0;}
+.no-sets{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);padding:18px 8px;text-align:center;}
+.flex-end{display:flex;justify-content:flex-end;}
 </style>
 </head>
 <body>
 
 <header>
   <div class="logo">GYM TRACKER</div>
-  <div class="header-actions">
-    <div class="menu-wrap" id="menuWrap">
-      <button class="menu-btn" onclick="toggleMenu()" title="Options">⋯</button>
-      <div class="menu-dropdown" id="menuDropdown">
-        <button class="menu-item" onclick="exportData(); closeMenu()">⬇ Export data</button>
-        <label class="menu-item" style="cursor:pointer">
-          ⬆ Import data
-          <input type="file" accept=".json" style="display:none" onchange="importData(event)">
-        </label>
-        <button class="menu-item danger" onclick="clearData(); closeMenu()">✕ Clear all data</button>
-      </div>
+  <div class="header-right">
+    <div id="workoutHeaderBadge" class="workout-banner" style="display:none">
+      <span id="workoutHeaderLabel" style="font-family:'DM Mono',monospace;font-size:11px;"></span>
+      <span id="workoutHeaderElapsed" class="workout-elapsed">00:00</span>
+      <span id="endWorkoutConfirm" style="display:none;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);">
+        End workout?
+        <button class="btn btn-sm btn-danger" onclick="endWorkout()">Yes</button>
+        <button class="btn btn-sm btn-secondary" onclick="document.getElementById('endWorkoutConfirm').style.display='none'">No</button>
+      </span>
+      <button class="btn btn-sm btn-danger" id="endWorkoutBtn" onclick="document.getElementById('endWorkoutConfirm').style.display='inline-flex'">End</button>
+    </div>
+    <div class="io-bar">
+      <button class="btn btn-secondary btn-sm" onclick="exportData()">⬇ Export</button>
+      <label class="btn btn-secondary btn-sm" style="cursor:pointer">
+        ⬆ Import
+        <input type="file" accept=".json" style="display:none" onchange="importData(event)">
+      </label>
     </div>
   </div>
 </header>
 
 <div class="app">
+
   <!-- SIDEBAR -->
   <aside class="sidebar">
-    <div class="section-label">Exercises</div>
-    <ul class="exercise-list" id="exerciseList"></ul>
-    <button class="btn btn-primary" style="width:100%" onclick="openExerciseModal()">+ New Exercise</button>
+    <div class="sidebar-header">
+      <div id="startWorkoutBtn">
+        <button class="btn btn-primary" style="width:100%" onclick="startWorkout()">▶ Start Workout</button>
+      </div>
+    </div>
+    <div class="sidebar-scroll">
+      <div class="section-label">Exercises</div>
+      <ul class="exercise-list" id="exerciseList"></ul>
+    </div>
+    <div class="sidebar-footer">
+      <button class="btn btn-secondary" style="width:100%" onclick="openExerciseModal()">+ New Exercise</button>
+    </div>
   </aside>
 
   <!-- DETAIL -->
   <main class="detail" id="detail">
     <div class="empty-state">
-      <div class="icon">🏋️</div>
+      <div class="empty-state-icon">🏋️</div>
       <p>Select or create an exercise</p>
     </div>
   </main>
@@ -576,9 +547,16 @@
         <label>Exercise Name</label>
         <input type="text" id="exName" placeholder="e.g. Bench Press">
       </div>
+      <div class="toggle-row">
+        <label>Weighted Exercise</label>
+        <label class="toggle">
+          <input type="checkbox" id="exWeighted" checked>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
       <div class="modal-field">
         <label>Setting Info</label>
-        <input type="text" id="exSetting" placeholder="e.g. Incline 30°, Grip width: shoulder">
+        <input type="text" id="exSetting" placeholder="e.g. Incline 30°, shoulder-width grip">
       </div>
       <div class="modal-field">
         <label>Notes</label>
@@ -596,437 +574,752 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// ─── DATA MODEL ───────────────────────────────────────────────────
-let db = loadDB();
-let selectedId = null;
-let timerInterval = null;
-let timerStart = null;
-let timerDuration = 120; // 2 minutes
-let editingId = null;
+// ═══════════════════════════════════════════════════════════════
+// DATA MODEL
+//
+// db.exercises[]:  { id, name, weighted, settingInfo, notes }
+// db.workouts[]:   { id, started, ended|null }
+// db.sets[]:       { id, exerciseId, workoutId|null, reps, weight|null, timestamp }
+//                    weight: { amount, unit }
+// db.timer:        { workoutId, startedAt, duration, notifScheduledAt } | null
+// ═══════════════════════════════════════════════════════════════
 
+const STORAGE_KEY = 'gymtracker_v2';
+
+let db = loadDB();
+let selectedExId = null;
+let workoutTimerInterval = null;   // interval for workout elapsed time
+let restTimerInterval = null;      // interval for rest-break countdown
+let _savingExercise = false;
+
+// ── Persistence ─────────────────────────────────────────────────
 function loadDB() {
-  const raw = localStorage.getItem('ironlog_v1');
-  if (raw) return JSON.parse(raw);
-  return { exercises: [] };
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      // Migrate from old format (ironlog_v1)
+      if (!parsed.sets) return migrateOldFormat(parsed);
+      return parsed;
+    }
+  } catch(e) {}
+  return { exercises: [], workouts: [], sets: [], timer: null };
+}
+
+function migrateOldFormat(old) {
+  // Old format: exercises[].sets[] inline
+  const db = { exercises: [], workouts: [], sets: [], timer: null };
+  (old.exercises || []).forEach(ex => {
+    const newEx = { id: ex.id, name: ex.name, weighted: true, settingInfo: ex.settingInfo || '', notes: ex.notes || '' };
+    db.exercises.push(newEx);
+    (ex.sets || []).forEach(s => {
+      db.sets.push({
+        id: s.id,
+        exerciseId: ex.id,
+        workoutId: null,
+        reps: s.reps,
+        weight: s.weight ? { amount: s.weight.value, unit: s.weight.unit } : null,
+        timestamp: s.datetime
+      });
+    });
+  });
+  return db;
 }
 
 function saveDB() {
-  localStorage.setItem('ironlog_v1', JSON.stringify(db));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
 }
 
 function genId() {
-  return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 }
 
-// ─── EXERCISE CRUD ────────────────────────────────────────────────
+// ── Workout ──────────────────────────────────────────────────────
+function activeWorkout() {
+  return db.workouts.find(w => !w.ended) || null;
+}
+
+function startWorkout() {
+  if (activeWorkout()) return;
+  const w = { id: genId(), started: new Date().toISOString(), ended: null };
+  db.workouts.push(w);
+  saveDB();
+  renderHeader();
+  renderSidebar();
+  toast('Workout started! 💪');
+  startWorkoutClock();
+}
+
+function endWorkout() {
+  const w = activeWorkout();
+  if (!w) return;
+  w.ended = new Date().toISOString();
+  saveDB();
+  stopWorkoutClock();
+  stopRestTimer();
+  // Hide the inline confirm UI
+  const confirm = document.getElementById('endWorkoutConfirm');
+  if (confirm) confirm.style.display = 'none';
+  renderHeader();
+  renderSidebar();
+  renderDetail();
+  toast('Workout logged ✓');
+}
+
+function startWorkoutClock() {
+  if (workoutTimerInterval) clearInterval(workoutTimerInterval);
+  workoutTimerInterval = setInterval(updateWorkoutClock, 1000);
+  updateWorkoutClock();
+}
+
+function stopWorkoutClock() {
+  if (workoutTimerInterval) { clearInterval(workoutTimerInterval); workoutTimerInterval = null; }
+}
+
+function updateWorkoutClock() {
+  const w = activeWorkout();
+  const el = document.getElementById('workoutHeaderElapsed');
+  if (!w || !el) return;
+  const elapsed = Math.floor((Date.now() - new Date(w.started)) / 1000);
+  const h = Math.floor(elapsed / 3600);
+  const m = Math.floor((elapsed % 3600) / 60);
+  const s = elapsed % 60;
+  el.textContent = h > 0
+    ? `${h}:${pad(m)}:${pad(s)}`
+    : `${pad(m)}:${pad(s)}`;
+}
+
+// Resume workout clock if page was refreshed mid-workout
+function resumeWorkoutClock() {
+  if (activeWorkout()) startWorkoutClock();
+}
+
+// ── Exercise CRUD ────────────────────────────────────────────────
+let _editingExId = null;
+
 function openExerciseModal(id = null) {
-  editingId = id;
+  _editingExId = id;
+  const modal = document.getElementById('exerciseModal');
+  const title = document.getElementById('modalTitle');
   if (id) {
     const ex = db.exercises.find(e => e.id === id);
-    document.getElementById('modalTitle').textContent = 'Edit Exercise';
+    title.textContent = 'Edit Exercise';
     document.getElementById('exName').value = ex.name;
+    document.getElementById('exWeighted').checked = ex.weighted !== false;
     document.getElementById('exSetting').value = ex.settingInfo || '';
     document.getElementById('exNotes').value = ex.notes || '';
   } else {
-    document.getElementById('modalTitle').textContent = 'New Exercise';
+    title.textContent = 'New Exercise';
     document.getElementById('exName').value = '';
+    document.getElementById('exWeighted').checked = true;
     document.getElementById('exSetting').value = '';
     document.getElementById('exNotes').value = '';
   }
-  document.getElementById('exerciseModal').classList.add('open');
-  setTimeout(() => document.getElementById('exName').focus(), 100);
+  modal.classList.add('open');
+  setTimeout(() => document.getElementById('exName').focus(), 80);
 }
 
 function closeExerciseModal() {
   document.getElementById('exerciseModal').classList.remove('open');
-  editingId = null;
+  _editingExId = null;
 }
 
-let _saving = false;
 function saveExercise() {
-  if (_saving) return;
-  _saving = true;
-  setTimeout(() => _saving = false, 500);
+  if (_savingExercise) return;
+  _savingExercise = true;
+  setTimeout(() => _savingExercise = false, 400);
+
   const name = document.getElementById('exName').value.trim();
-  if (!name) return;
+  if (!name) { toast('Enter an exercise name', true); return; }
+
+  const weighted = document.getElementById('exWeighted').checked;
   const settingInfo = document.getElementById('exSetting').value.trim();
   const notes = document.getElementById('exNotes').value.trim();
 
-  if (editingId) {
-    const ex = db.exercises.find(e => e.id === editingId);
-    ex.name = name; ex.settingInfo = settingInfo; ex.notes = notes;
+  if (_editingExId) {
+    const ex = db.exercises.find(e => e.id === _editingExId);
+    Object.assign(ex, { name, weighted, settingInfo, notes });
     toast('Exercise updated');
   } else {
-    const ex = { id: genId(), name, settingInfo, notes, sets: [] };
-    db.exercises.push(ex);
-    selectedId = ex.id;
-    toast('Exercise created');
+    db.exercises.push({ id: genId(), name, weighted, settingInfo, notes });
+    toast('Exercise added');
   }
   saveDB();
   closeExerciseModal();
   renderSidebar();
-  renderDetail();
+  if (_editingExId && selectedExId === _editingExId) renderDetail();
+  if (!_editingExId && !selectedExId) {
+    selectedExId = db.exercises[db.exercises.length - 1].id;
+    renderSidebar();
+    renderDetail();
+  }
 }
 
 function deleteExercise(id) {
-  if (!confirm('Delete this exercise and all its data?')) return;
+  // Inline confirm: first click arms it, second click fires
+  const btn = document.querySelector(`[data-delete-ex="${id}"]`);
+  if (btn && !btn.dataset.armed) {
+    btn.dataset.armed = '1';
+    btn.textContent = '✕ Sure?';
+    btn.style.color = 'var(--danger)';
+    setTimeout(() => { if (btn) { delete btn.dataset.armed; btn.textContent = '🗑'; btn.style.color = ''; } }, 2500);
+    return;
+  }
   db.exercises = db.exercises.filter(e => e.id !== id);
-  if (selectedId === id) selectedId = null;
+  db.sets = db.sets.filter(s => s.exerciseId !== id);
+  if (selectedExId === id) selectedExId = null;
   saveDB();
   renderSidebar();
   renderDetail();
   toast('Exercise deleted');
 }
 
-// ─── SET LOGGING ──────────────────────────────────────────────────
+// ── Set Logging ──────────────────────────────────────────────────
 function logSet() {
-  const ex = db.exercises.find(e => e.id === selectedId);
+  const ex = db.exercises.find(e => e.id === selectedExId);
   if (!ex) return;
 
-  const weightVal = parseFloat(document.getElementById('logWeight').value);
-  const unit = document.getElementById('logUnit').value;
   const reps = parseInt(document.getElementById('logReps').value);
+  if (isNaN(reps) || reps <= 0) { toast('Enter valid reps', true); return; }
 
-  if (isNaN(weightVal) || weightVal <= 0 || isNaN(reps) || reps <= 0) {
-    toast('Enter valid weight and reps');
-    return;
+  let weight = null;
+  if (ex.weighted !== false) {
+    const amount = parseFloat(document.getElementById('logWeight').value);
+    const unit = document.getElementById('logUnit').value;
+    if (isNaN(amount) || amount < 0) { toast('Enter valid weight', true); return; }
+    weight = { amount, unit };
   }
 
   const set = {
     id: genId(),
+    exerciseId: ex.id,
+    workoutId: activeWorkout()?.id || null,
     reps,
-    datetime: new Date().toISOString(),
-    weight: { value: weightVal, unit }
+    weight,
+    timestamp: new Date().toISOString()
   };
 
-  ex.sets.push(set);
+  db.sets.push(set);
   saveDB();
   renderDetail();
+  renderSidebar(); // update meta
   toast('Set logged! 💪');
-  offerTimer();
+
+  // Offer rest timer
+  offerRestTimer();
 }
 
 function deleteSet(setId) {
-  const ex = db.exercises.find(e => e.id === selectedId);
-  if (!ex) return;
-  ex.sets = ex.sets.filter(s => s.id !== setId);
+  db.sets = db.sets.filter(s => s.id !== setId);
   saveDB();
   renderDetail();
+  renderSidebar();
 }
 
-// ─── TIMER ────────────────────────────────────────────────────────
-function offerTimer() {
-  // Auto-start the timer
-  startTimer();
+// ── Sets for current exercise ─────────────────────────────────────
+function setsForExercise(exId) {
+  return db.sets.filter(s => s.exerciseId === exId).sort((a,b) => new Date(a.timestamp) - new Date(b.timestamp));
 }
 
-function startTimer() {
-  if (timerInterval) { clearInterval(timerInterval); }
-  timerStart = Date.now();
-  timerDuration = 120;
-
-  const banner = document.getElementById('timerBanner');
-  if (!banner) return;
-  banner.classList.add('active');
-  updateTimerDisplay();
-
-  timerInterval = setInterval(() => {
-    const elapsed = Math.floor((Date.now() - timerStart) / 1000);
-    const remaining = timerDuration - elapsed;
-    if (remaining <= 0) {
-      clearInterval(timerInterval);
-      timerInterval = null;
-      banner.classList.remove('active');
-      toast('Rest complete! Time to lift 🔥');
-    } else {
-      updateTimerDisplay();
-    }
-  }, 500);
+function setsForExerciseInWorkout(exId, workoutId) {
+  return db.sets.filter(s => s.exerciseId === exId && s.workoutId === workoutId);
 }
 
-function stopTimer() {
-  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
-  const banner = document.getElementById('timerBanner');
-  if (banner) banner.classList.remove('active');
+// ── Rest Timer ───────────────────────────────────────────────────
+const DEFAULT_REST = 120; // seconds
+
+function offerRestTimer() {
+  // Ask user
+  const inDetail = document.getElementById('timerAsk');
+  if (inDetail) {
+    inDetail.classList.add('show');
+  }
 }
 
-function updateTimerDisplay() {
-  const el = document.getElementById('timerDisplay');
+function startRestTimer(durationSec) {
+  // Hide ask prompt
+  const ask = document.getElementById('timerAsk');
+  if (ask) ask.classList.remove('show');
+
+  stopRestTimer(); // cancel any running timer
+
+  const endsAt = Date.now() + durationSec * 1000;
+  db.timer = { exerciseId: selectedExId, endsAt, duration: durationSec };
+  saveDB();
+
+  scheduleNotification();
+
+  renderTimerBanner();
+  restTimerInterval = setInterval(tickRestTimer, 500);
+}
+
+function stopRestTimer() {
+  if (restTimerInterval) { clearInterval(restTimerInterval); restTimerInterval = null; }
+  db.timer = null;
+  saveDB();
+  hideTimerBanner();
+}
+
+function tickRestTimer() {
+  const t = db.timer;
+  if (!t) { stopRestTimer(); return; }
+  const remaining = Math.ceil((t.endsAt - Date.now()) / 1000);
+  if (remaining <= 0) {
+    stopRestTimer();
+    toast('Rest complete — time to lift! 🔥');
+    return;
+  }
+  updateTimerBanner(remaining, t.duration);
+}
+
+function renderTimerBanner() {
+  const card = document.getElementById('timerCard');
+  if (!card) return;
+  card.classList.add('show');
+  const t = db.timer;
+  if (!t) return;
+  const remaining = Math.ceil((t.endsAt - Date.now()) / 1000);
+  updateTimerBanner(Math.max(0, remaining), t.duration);
+}
+
+function updateTimerBanner(remaining, total) {
+  const display = document.getElementById('timerDisplay');
   const bar = document.getElementById('timerBar');
-  if (!el) return;
-  const elapsed = Math.floor((Date.now() - timerStart) / 1000);
-  const remaining = Math.max(0, timerDuration - elapsed);
-  const m = Math.floor(remaining / 60).toString().padStart(2, '0');
-  const s = (remaining % 60).toString().padStart(2, '0');
-  el.textContent = `${m}:${s}`;
-  const pct = (remaining / timerDuration) * 100;
-  if (bar) bar.style.width = pct + '%';
+  if (!display) return;
+  display.textContent = `${pad(Math.floor(remaining/60))}:${pad(remaining%60)}`;
+  if (bar) bar.style.width = ((remaining/total)*100).toFixed(1) + '%';
 }
 
-// ─── CHART ────────────────────────────────────────────────────────
-function renderChart(ex) {
+function hideTimerBanner() {
+  const card = document.getElementById('timerCard');
+  if (card) card.classList.remove('show');
+}
+
+// Resume timer if page was refreshed
+function resumeRestTimer() {
+  const t = db.timer;
+  if (!t) return;
+  const remaining = Math.ceil((t.endsAt - Date.now()) / 1000);
+  if (remaining <= 0) {
+    db.timer = null; saveDB(); return;
+  }
+  renderTimerBanner();
+  restTimerInterval = setInterval(tickRestTimer, 500);
+}
+
+// ── Notifications ────────────────────────────────────────────────
+let _notifSupported = ('Notification' in window && 'serviceWorker' in navigator);
+// We actually only need basic Notification API for this; SW optional
+let _notifEnabled = false;
+
+async function requestNotifPermission() {
+  if (!('Notification' in window)) return false;
+  if (Notification.permission === 'granted') { _notifEnabled = true; return true; }
+  if (Notification.permission === 'denied') return false;
+  const perm = await Notification.requestPermission();
+  _notifEnabled = (perm === 'granted');
+  return _notifEnabled;
+}
+
+function scheduleNotification() {
+  // We do NOT use setTimeout for the notification — background timers are throttled
+  // by the OS/browser (especially on Linux) and will fire late or not at all.
+  // Instead we check the timestamp whenever the tab becomes visible again.
+  // The restTimerInterval (which runs at 500ms) already handles the in-foreground case
+  // and calls stopRestTimer() + toast when time is up; this handles the background case.
+  document.addEventListener('visibilitychange', _onVisibilityChange);
+}
+
+function _onVisibilityChange() {
+  if (document.hidden) return;
+  const t = db.timer;
+  if (!t) { document.removeEventListener('visibilitychange', _onVisibilityChange); return; }
+  if (Date.now() >= t.endsAt) {
+    document.removeEventListener('visibilitychange', _onVisibilityChange);
+    if (Notification.permission === 'granted') {
+      new Notification('Gym Tracker', {
+        body: 'Rest over — time for your next set! 💪',
+        icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🏋️</text></svg>'
+      });
+    }
+    stopRestTimer();
+    toast('Rest complete — time to lift! 🔥');
+  }
+}
+
+function getNotifStatus() {
+  if (!('Notification' in window)) return 'unsupported';
+  return Notification.permission; // 'default' | 'granted' | 'denied'
+}
+
+// ── Chart ─────────────────────────────────────────────────────────
+function renderChart(sets) {
   const canvas = document.getElementById('weightChart');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
 
-  // Get last 20 sets
-  const sets = ex.sets.slice(-20);
-
-  if (sets.length === 0) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = '#444';
-    ctx.font = '12px DM Mono, monospace';
-    ctx.textAlign = 'center';
-    ctx.fillText('No sets logged yet', canvas.width / 2, canvas.height / 2);
-    return;
-  }
-
+  const recent = sets.slice(-20);
+  const W = canvas.offsetWidth || 400;
+  const H = 130;
   const dpr = window.devicePixelRatio || 1;
-  const W = canvas.offsetWidth;
-  const H = 140;
   canvas.width = W * dpr;
   canvas.height = H * dpr;
   canvas.style.height = H + 'px';
   ctx.scale(dpr, dpr);
-
-  const values = sets.map(s => s.weight.value);
-  const maxVal = Math.max(...values);
-  const minVal = Math.min(...values) * 0.9;
-  const range = maxVal - minVal || 1;
-
-  const padL = 44, padR = 12, padT = 14, padB = 28;
-  const chartW = W - padL - padR;
-  const chartH = H - padT - padB;
-  const barW = Math.max(6, Math.floor(chartW / sets.length) - 4);
-
   ctx.clearRect(0, 0, W, H);
 
-  // Grid lines
-  ctx.strokeStyle = '#222';
+  if (recent.length === 0) {
+    ctx.fillStyle = '#444';
+    ctx.font = '11px DM Mono,monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('No sets logged yet', W/2, H/2);
+    return;
+  }
+
+  const vals = recent.map(s => s.weight?.amount ?? 0);
+  const maxVal = Math.max(...vals);
+  const minVal = Math.min(...vals) * 0.92;
+  const range = maxVal - minVal || 1;
+
+  const padL = 40, padR = 10, padT = 12, padB = 24;
+  const cW = W - padL - padR;
+  const cH = H - padT - padB;
+  const bW = Math.max(4, Math.floor(cW / recent.length) - 3);
+
+  // Grid
+  ctx.strokeStyle = '#1e1e1e';
   ctx.lineWidth = 1;
-  [0, 0.25, 0.5, 0.75, 1].forEach(t => {
-    const y = padT + chartH * (1 - t);
-    ctx.beginPath();
-    ctx.moveTo(padL, y); ctx.lineTo(W - padR, y);
-    ctx.stroke();
+  [0, .5, 1].forEach(t => {
+    const y = padT + cH * (1-t);
+    ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(W-padR, y); ctx.stroke();
   });
 
-  // Y axis labels
-  ctx.fillStyle = '#555';
-  ctx.font = '9px DM Mono, monospace';
+  // Y labels
+  ctx.fillStyle = '#4a4a4a';
+  ctx.font = '8px DM Mono,monospace';
   ctx.textAlign = 'right';
-  [0, 0.5, 1].forEach(t => {
+  [0, .5, 1].forEach(t => {
     const val = minVal + range * t;
-    const y = padT + chartH * (1 - t);
-    ctx.fillText(val.toFixed(1), padL - 4, y + 3);
+    ctx.fillText(val.toFixed(1), padL-4, padT + cH*(1-t) + 3);
   });
 
   // Bars
-  const maxWeight = Math.max(...values);
-  sets.forEach((s, i) => {
-    const x = padL + i * (chartW / sets.length) + (chartW / sets.length - barW) / 2;
-    const norm = (s.weight.value - minVal) / range;
-    const bh = Math.max(2, norm * chartH);
-    const y = padT + chartH - bh;
-
-    const isPR = s.weight.value === maxWeight;
-    ctx.fillStyle = isPR ? '#e8ff47' : '#3a4000';
+  recent.forEach((s, i) => {
+    const x = padL + i * (cW/recent.length) + (cW/recent.length - bW)/2;
+    const norm = ((s.weight?.amount ?? 0) - minVal) / range;
+    const bh = Math.max(2, norm * cH);
+    const y = padT + cH - bh;
+    const isPR = (s.weight?.amount ?? 0) === maxVal;
+    ctx.fillStyle = isPR ? '#e8ff47' : '#2e3800';
     ctx.beginPath();
-    ctx.roundRect(x, y, barW, bh, [2, 2, 0, 0]);
+    if (ctx.roundRect) ctx.roundRect(x, y, bW, bh, [2,2,0,0]);
+    else ctx.rect(x, y, bW, bh);
     ctx.fill();
-
-    // X label (date)
-    const d = new Date(s.datetime);
-    const label = `${d.getMonth()+1}/${d.getDate()}`;
-    ctx.fillStyle = '#444';
-    ctx.font = '8px DM Mono, monospace';
+    // Date label
+    const d = new Date(s.timestamp);
+    ctx.fillStyle = '#3a3a3a';
+    ctx.font = '7px DM Mono,monospace';
     ctx.textAlign = 'center';
-    ctx.fillText(label, x + barW / 2, H - padB + 12);
+    ctx.fillText(`${d.getMonth()+1}/${d.getDate()}`, x + bW/2, H - padB + 11);
   });
 
-  // Unit label
-  const unit = sets[sets.length-1]?.weight?.unit || 'kg';
-  ctx.fillStyle = '#555';
-  ctx.font = '9px DM Mono, monospace';
-  ctx.textAlign = 'left';
-  ctx.fillText(unit, 0, padT + 3);
+  // Unit hint
+  const unit = recent[recent.length-1]?.weight?.unit;
+  if (unit) {
+    ctx.fillStyle = '#444';
+    ctx.font = '8px DM Mono,monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText(unit, 0, padT+3);
+  }
 }
 
-// ─── RENDER ───────────────────────────────────────────────────────
+// ── Render ────────────────────────────────────────────────────────
+function renderHeader() {
+  const w = activeWorkout();
+  const badge = document.getElementById('workoutHeaderBadge');
+  const label = document.getElementById('workoutHeaderLabel');
+  const startBtn = document.getElementById('startWorkoutBtn');
+
+  if (w) {
+    badge.style.display = 'flex';
+    startBtn.style.display = 'none';
+    const start = new Date(w.started);
+    label.textContent = `WORKOUT · ${start.toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'})}`;
+  } else {
+    badge.style.display = 'none';
+    startBtn.style.display = '';
+  }
+}
+
 function renderSidebar() {
   const list = document.getElementById('exerciseList');
   list.innerHTML = '';
 
   if (db.exercises.length === 0) {
-    list.innerHTML = '<li style="color:#555;font-size:12px;padding:8px;font-family:DM Mono,monospace;">No exercises yet</li>';
+    list.innerHTML = '<li style="color:var(--muted);font-size:11px;padding:8px 4px;font-family:\'DM Mono\',monospace;">No exercises yet</li>';
     return;
   }
 
-  db.exercises.forEach(ex => {
+  // Sort: exercises with most-recent set first
+  const sorted = [...db.exercises].sort((a, b) => {
+    const lastA = setsForExercise(a.id).at(-1)?.timestamp || '0';
+    const lastB = setsForExercise(b.id).at(-1)?.timestamp || '0';
+    return lastB.localeCompare(lastA);
+  });
+
+  sorted.forEach(ex => {
+    const sets = setsForExercise(ex.id);
+    const last = sets.at(-1);
+    let meta;
+    if (!last) {
+      meta = 'no sets yet';
+    } else if (ex.weighted !== false && last.weight) {
+      meta = `${last.weight.amount}${last.weight.unit} × ${last.reps}`;
+    } else {
+      meta = `${last.reps} reps`;
+    }
+
     const li = document.createElement('li');
-    li.className = 'exercise-item' + (ex.id === selectedId ? ' active' : '');
-    const lastSet = ex.sets[ex.sets.length - 1];
-    const meta = lastSet ? `${lastSet.weight.value}${lastSet.weight.unit} × ${lastSet.reps}` : `${ex.sets.length} sets`;
+    li.className = 'exercise-item' + (ex.id === selectedExId ? ' active' : '');
     li.innerHTML = `
-      <div style="flex:1;min-width:0">
-        <div class="exercise-name">${esc(ex.name)}</div>
-        <div class="exercise-meta">${esc(meta)}</div>
+      <div class="exercise-item-info">
+        <div class="exercise-item-name">${esc(ex.name)}</div>
+        <div class="exercise-item-meta">${esc(meta)}</div>
       </div>
-      <div class="exercise-actions">
+      <div class="exercise-item-actions">
         <button class="btn-icon" onclick="event.stopPropagation();openExerciseModal('${ex.id}')" title="Edit">✏️</button>
-        <button class="btn-icon danger" onclick="event.stopPropagation();deleteExercise('${ex.id}')" title="Delete">🗑</button>
-      </div>
-    `;
-    li.addEventListener('click', () => { selectedId = ex.id; renderSidebar(); renderDetail(); });
+        <button class="btn-icon danger" data-delete-ex="${ex.id}" onclick="event.stopPropagation();deleteExercise('${ex.id}')" title="Delete">🗑</button>
+      </div>`;
+    li.addEventListener('click', () => {
+      selectedExId = ex.id;
+      renderSidebar();
+      renderDetail();
+    });
     list.appendChild(li);
   });
 }
 
 function renderDetail() {
   const detail = document.getElementById('detail');
-  const ex = db.exercises.find(e => e.id === selectedId);
+  const ex = db.exercises.find(e => e.id === selectedExId);
 
   if (!ex) {
-    detail.innerHTML = `
-      <div class="empty-state">
-        <div class="icon">🏋️</div>
-        <p>Select or create an exercise</p>
-      </div>`;
+    detail.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🏋️</div><p>Select or create an exercise</p></div>`;
     return;
   }
 
-  const lastWeight = getLastWeight(ex);
-  const prSet = ex.sets.reduce((best, s) => (!best || s.weight.value > best.weight.value) ? s : best, null);
+  const sets = setsForExercise(ex.id);
+  const prSet = ex.weighted !== false
+    ? sets.reduce((best, s) => (!best || (s.weight?.amount||0) > (best.weight?.amount||0)) ? s : best, null)
+    : null;
+  const lastSet = sets.at(-1);
+  const recentSets = [...sets].reverse().slice(0, 20);
 
-  const recentSets = [...ex.sets].reverse().slice(0, 15);
+  const w = activeWorkout();
+  const todaySets = w ? setsForExerciseInWorkout(ex.id, w.id) : [];
+
+  // Notification status note
+  const notifStatus = getNotifStatus();
+  let notifNote = '';
+  if (notifStatus === 'unsupported') {
+    notifNote = `<div class="notif-notice">⚠ Your browser doesn't support notifications. The timer will still run, but you won't receive an alert when it finishes.</div>`;
+  } else if (notifStatus === 'denied') {
+    notifNote = `<div class="notif-notice">⚠ Notifications are blocked. Enable them in browser settings to get alerted when your rest ends.</div>`;
+  }
+
+  // Last weight / PR
+  let prHtml = '';
+  if (prSet && prSet.weight) {
+    const isLastPR = lastSet && lastSet.weight && lastSet.weight.amount === prSet.weight.amount;
+    prHtml = `<div class="pr-chip">Last: ${lastSet?.weight?.amount ?? '—'}${lastSet?.weight?.unit ?? ''} &nbsp;·&nbsp; PR: ${prSet.weight.amount}${prSet.weight.unit} ${isLastPR ? '<span class="pr-badge">PR</span>' : ''}</div>`;
+  } else if (lastSet && ex.weighted === false) {
+    prHtml = `<div class="pr-chip">Last: ${lastSet.reps} reps</div>`;
+  }
+
+  // Timer ask html — shown via JS after set logged
+  const timerAskHtml = `
+    <div id="timerAsk" style="display:none;flex-direction:column;gap:8px;padding:10px 14px;background:var(--accent-bg);border:1px solid var(--accent);border-radius:var(--radius);font-family:'DM Mono',monospace;font-size:12px;color:var(--accent);">
+      <div>Start rest-break timer?</div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button class="btn btn-primary btn-sm" onclick="startRestTimer(document.getElementById('timerDur').value*60||120)">Start</button>
+        <div class="field" style="flex-direction:row;align-items:center;gap:6px;">
+          <input type="number" id="timerDur" value="2" min="1" max="10" style="width:60px;font-size:13px;padding:5px 8px;">
+          <label style="font-size:10px;color:var(--muted)">MIN</label>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('timerAsk').style.display='none'">Skip</button>
+      </div>
+    </div>`;
+
+  // Weight log form
+  let logFormHtml = '';
+  if (ex.weighted !== false) {
+    const lastUnit = lastSet?.weight?.unit || 'kg';
+    const lastAmt = lastSet?.weight?.amount ?? '';
+    logFormHtml = `
+      <div class="field">
+        <label>Weight</label>
+        <input type="number" class="wide" id="logWeight" placeholder="0" min="0" step="0.5" value="${lastAmt}">
+      </div>
+      <div class="field">
+        <label>Unit</label>
+        <select id="logUnit" style="width:70px">
+          <option value="kg" ${lastUnit==='kg'?'selected':''}>kg</option>
+          <option value="lbs" ${lastUnit==='lbs'?'selected':''}>lbs</option>
+        </select>
+      </div>`;
+  }
 
   detail.innerHTML = `
-    <!-- HEADER -->
-    <div class="card exercise-header-card">
-      <div style="flex:1">
-        <div class="exercise-title">${esc(ex.name)}</div>
-        ${ex.settingInfo || ex.notes ? `
-        <div class="info-row">
-          ${ex.settingInfo ? `<div class="info-block"><label>Setting</label><p>${esc(ex.settingInfo)}</p></div>` : ''}
-          ${ex.notes ? `<div class="info-block" style="grid-column:${ex.settingInfo ? '2' : '1 / -1'}"><label>Notes</label><p>${esc(ex.notes)}</p></div>` : ''}
-        </div>` : ''}
-        ${lastWeight ? `<div class="last-weight">Last: ${lastWeight.value}${lastWeight.unit} ${prSet && lastWeight.value === prSet.weight.value ? '<span class="pr-badge">PR</span>' : ''}</div>` : ''}
+    <!-- HEADER CARD -->
+    <div class="card">
+      <div class="ex-header">
+        <div style="flex:1">
+          <div class="ex-title">${esc(ex.name)}</div>
+          <div class="ex-tags">
+            <span class="tag">${ex.weighted !== false ? 'Weighted' : 'Bodyweight'}</span>
+            ${w ? `<span class="tag accent">${todaySets.length} set${todaySets.length!==1?'s':''} this workout</span>` : ''}
+          </div>
+          ${(ex.settingInfo || ex.notes) ? `
+          <div class="info-grid">
+            ${ex.settingInfo ? `<div class="info-block"><label>Setting</label><p>${esc(ex.settingInfo)}</p></div>` : ''}
+            ${ex.notes ? `<div class="info-block" style="grid-column:${ex.settingInfo?'2':'1/-1'}"><label>Notes</label><p>${esc(ex.notes)}</p></div>` : ''}
+          </div>` : ''}
+          ${prHtml}
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="openExerciseModal('${ex.id}')">Edit</button>
       </div>
-      <button class="btn btn-secondary" onclick="openExerciseModal('${ex.id}')">Edit</button>
     </div>
 
-    <!-- TIMER -->
-    <div class="timer-banner" id="timerBanner">
-      <div>
-        <div class="timer-label">Rest Timer</div>
+    <!-- TIMER ASK -->
+    ${timerAskHtml}
+
+    <!-- REST TIMER BANNER -->
+    <div class="timer-card" id="timerCard">
+      <div class="timer-left">
+        <div class="timer-lbl">Rest Timer</div>
         <div class="timer-display" id="timerDisplay">02:00</div>
       </div>
-      <div class="timer-progress"><div class="timer-bar" id="timerBar"></div></div>
-      <button class="btn btn-secondary" onclick="stopTimer()">Skip</button>
+      <div class="timer-mid">
+        <div class="timer-progress"><div class="timer-bar" id="timerBar" style="width:100%"></div></div>
+        <div class="timer-msg">Rest up — next set incoming</div>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="stopRestTimer()">Skip</button>
     </div>
+
+    ${notifNote}
 
     <!-- LOG SET -->
     <div class="card">
       <div class="card-title">Log Set</div>
       <div class="log-form">
-        <div class="field">
-          <label>Weight</label>
-          <input type="number" id="logWeight" placeholder="0" min="0" step="0.5" value="${lastWeight ? lastWeight.value : ''}">
-        </div>
-        <div class="field">
-          <label>Unit</label>
-          <select id="logUnit" style="width:72px">
-            <option value="kg" ${lastWeight?.unit === 'kg' ? 'selected' : ''}>kg</option>
-            <option value="lbs" ${lastWeight?.unit === 'lbs' ? 'selected' : ''}>lbs</option>
-          </select>
-        </div>
+        ${logFormHtml}
         <div class="field">
           <label>Reps</label>
-          <input type="number" id="logReps" placeholder="0" min="1" step="1" value="">
+          <input type="number" id="logReps" placeholder="0" min="1" step="1">
         </div>
         <button class="btn btn-primary" onclick="logSet()">Log Set</button>
       </div>
     </div>
 
-    <!-- CHART -->
+    ${ex.weighted !== false ? `
+    <!-- WEIGHT CHART -->
     <div class="card">
       <div class="card-title">Weight History</div>
-      <div class="chart-container">
-        <canvas id="weightChart"></canvas>
-      </div>
-    </div>
+      <canvas id="weightChart"></canvas>
+    </div>` : ''}
 
-    <!-- SETS LOG -->
+    <!-- RECENT SETS -->
     <div class="card">
       <div class="card-title">Recent Sets</div>
-      ${recentSets.length === 0 ? '<div class="no-sets">No sets logged yet. Get to work!</div>' : `
-      <table class="sets-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Date & Time</th>
-            <th>Weight</th>
-            <th>Reps</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          ${recentSets.map((s, i) => {
-            const d = new Date(s.datetime);
-            const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-            const timeStr = d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-            const isPR = prSet && s.id === prSet.id;
-            return `<tr>
-              <td><span class="set-badge">${ex.sets.length - i}</span></td>
-              <td>${dateStr} ${timeStr}</td>
-              <td style="color:${isPR ? 'var(--accent)' : 'var(--text)'}">
-                ${s.weight.value} ${s.weight.unit}
-                ${isPR ? '<span class="pr-badge">PR</span>' : ''}
-              </td>
-              <td>${s.reps} reps</td>
-              <td><button class="btn-icon danger" onclick="deleteSet('${s.id}')">✕</button></td>
-            </tr>`;
-          }).join('')}
-        </tbody>
-      </table>`}
-    </div>
-  `;
+      ${recentSets.length === 0
+        ? '<div class="no-sets">No sets yet. Get to work!</div>'
+        : `<table class="sets-table">
+            <thead><tr>
+              <th>#</th><th>Date &amp; Time</th>
+              ${ex.weighted !== false ? '<th>Weight</th>' : ''}
+              <th>Reps</th><th></th>
+            </tr></thead>
+            <tbody>
+              ${recentSets.map((s, i) => {
+                const d = new Date(s.timestamp);
+                const dateStr = d.toLocaleDateString('en-AU',{month:'short',day:'numeric'});
+                const timeStr = d.toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'});
+                const isPR = prSet && s.id === prSet.id;
+                return `<tr>
+                  <td><span class="set-num">${sets.length - i}</span></td>
+                  <td>${dateStr} ${timeStr}</td>
+                  ${ex.weighted !== false ? `<td style="color:${isPR?'var(--accent)':'var(--text)'}">${s.weight?.amount ?? '—'} ${s.weight?.unit ?? ''} ${isPR?'<span class="pr-badge">PR</span>':''}</td>` : ''}
+                  <td>${s.reps} reps</td>
+                  <td><button class="btn-icon danger" onclick="deleteSet('${s.id}')">✕</button></td>
+                </tr>`;
+              }).join('')}
+            </tbody>
+           </table>`}
+    </div>`;
 
   // Re-attach timer if running
-  if (timerInterval) {
-    document.getElementById('timerBanner').classList.add('active');
-    updateTimerDisplay();
+  if (db.timer) {
+    const remaining = Math.ceil((db.timer.endsAt - Date.now()) / 1000);
+    if (remaining > 0) renderTimerBanner();
+    else { db.timer = null; saveDB(); }
   }
 
-  // Render chart after DOM is ready
-  requestAnimationFrame(() => renderChart(ex));
+  // Request notification permission if not yet decided
+  if (notifStatus === 'default') {
+    requestNotifPermission();
+  }
+
+  // Render chart
+  if (ex.weighted !== false) {
+    requestAnimationFrame(() => renderChart(sets));
+  }
 }
 
-// ─── HELPERS ──────────────────────────────────────────────────────
-function getLastWeight(ex) {
-  if (!ex.sets.length) return null;
-  return ex.sets[ex.sets.length - 1].weight;
+// ── Import / Export ───────────────────────────────────────────────
+// Serialise db into the canonical export shape:
+//   { exercises: [{ id, name, settingInfo, notes, sets: [{ id, reps, datetime, weight:{value,unit} }] }] }
+// This matches what every previous version of the app has exported, so files stay
+// interchangeable across versions.
+function toExportFormat() {
+  return {
+    exercises: db.exercises.map(ex => ({
+      id: ex.id,
+      name: ex.name,
+      weighted: ex.weighted,
+      settingInfo: ex.settingInfo || '',
+      notes: ex.notes || '',
+      sets: db.sets
+        .filter(s => s.exerciseId === ex.id)
+        .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+        .map(s => ({
+          id: s.id,
+          workoutId: s.workoutId || null,
+          reps: s.reps,
+          datetime: s.timestamp,                          // canonical field name
+          weight: s.weight ? { value: s.weight.amount,   // canonical field name
+                               unit:  s.weight.unit } : null
+        }))
+    })),
+    workouts: db.workouts   // carry workouts along too; older versions will just ignore this key
+  };
 }
 
-function esc(str) {
-  return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+// Parse either format back into the internal db shape.
+function fromExportFormat(raw) {
+  // New internal format (has top-level `sets` array) — passthrough after light validation.
+  if (Array.isArray(raw.sets)) return raw;
+
+  // Legacy / canonical export format — exercises with inline sets.
+  return migrateOldFormat(raw);
 }
 
-function toast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
-}
-
-// ─── IMPORT / EXPORT ──────────────────────────────────────────────
 function exportData() {
-  const json = JSON.stringify(db, null, 2);
-  const blob = new Blob([json], { type: 'application/json' });
+  const payload = toExportFormat();
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `ironlog-export-${new Date().toISOString().slice(0,10)}.json`;
+  a.download = `gym-tracker-${new Date().toISOString().slice(0,10)}.json`;
   a.click();
   URL.revokeObjectURL(url);
   toast('Data exported!');
@@ -1038,61 +1331,56 @@ function importData(event) {
   const reader = new FileReader();
   reader.onload = e => {
     try {
-      const imported = JSON.parse(e.target.result);
-      if (!imported.exercises || !Array.isArray(imported.exercises)) throw new Error('Invalid format');
-      if (!confirm(`Import ${imported.exercises.length} exercises? This will replace your current data.`)) return;
-      db = imported;
-      selectedId = null;
+      const raw = JSON.parse(e.target.result);
+      if (!raw.exercises || !Array.isArray(raw.exercises)) throw new Error();
+      db = fromExportFormat(raw);
+      selectedExId = null;
       saveDB();
+      renderHeader();
       renderSidebar();
       renderDetail();
       toast('Data imported!');
-    } catch {
-      toast('Invalid JSON file');
-    }
+    } catch { toast('Invalid file', true); }
   };
   reader.readAsText(file);
   event.target.value = '';
 }
 
-// ─── KEYBOARD ─────────────────────────────────────────────────────
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeExerciseModal();
-  if ((e.key === 'Enter') && document.getElementById('exerciseModal').classList.contains('open')) {
-    if (e.target.tagName !== 'TEXTAREA') saveExercise();
-  }
-});
+// ── Helpers ───────────────────────────────────────────────────────
+function pad(n) { return String(n).padStart(2,'0'); }
 
+function esc(str) {
+  return (str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function toast(msg, isError = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (isError ? ' error' : '');
+  requestAnimationFrame(() => { t.classList.add('show'); });
+  clearTimeout(t._timeout);
+  t._timeout = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ── Keyboard ──────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  const modal = document.getElementById('exerciseModal');
+  if (e.key === 'Escape' && modal.classList.contains('open')) closeExerciseModal();
+  if (e.key === 'Enter' && modal.classList.contains('open') && e.target.tagName !== 'TEXTAREA') saveExercise();
+});
 document.getElementById('exerciseModal').addEventListener('click', e => {
   if (e.target === e.currentTarget) closeExerciseModal();
 });
 
-// ─── OPTIONS MENU ─────────────────────────────────────────────────
-function toggleMenu() {
-  document.getElementById('menuDropdown').classList.toggle('open');
-}
+// Patch timerAsk display toggle
+const _origRenderDetail = renderDetail;
 
-function closeMenu() {
-  document.getElementById('menuDropdown').classList.remove('open');
-}
-
-document.addEventListener('click', e => {
-  if (!document.getElementById('menuWrap').contains(e.target)) closeMenu();
-});
-
-function clearData() {
-  if (!confirm('Clear ALL exercises and sets? This cannot be undone.')) return;
-  db = { exercises: [] };
-  selectedId = null;
-  saveDB();
-  renderSidebar();
-  renderDetail();
-  toast('All data cleared');
-}
-
-// ─── INIT ─────────────────────────────────────────────────────────
+// ── Init ──────────────────────────────────────────────────────────
+renderHeader();
 renderSidebar();
 renderDetail();
+resumeWorkoutClock();
+resumeRestTimer();
 </script>
 </body>
 </html>
